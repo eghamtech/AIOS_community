@@ -11,10 +11,11 @@
 #
 # this agent creates new columns as elements of GloVe vector by parsing text field into words including punctuation
 # it queries GloVe database on glove_host provided via AIOS API
-# it also maps original 300 elements vector to vector size=300/group_length and considers only word_count_max initial words
-# if parameter word_count_max not specified (0) then agent will analyse given field to find its maximum length
+# it also maps original 300 elements vector to "vector size"=300/group_length and considers only word_count_max initial words
+# if parameter word_count_max not specified (0) then agent will consider all given words in each row
 #
 # this version is optimised for speed and memory usage and it saves temp file with results in case agent crashes
+# this version produces single vector of size "vector size" which is a simple sum of all words vectors
 
 if 'dicts' not in globals():
     dicts = {}
@@ -31,14 +32,14 @@ class cls_agent_{id}:
     col1 = col_definition1.split("|")[0]
     file1 = col_definition1.split("|")[1]
     result_id = {id}
-    field_prefix = 'glv_' + str({group_length}) + '_' + col1 + '_'
+    field_prefix = 'glv_sum_' + str({group_length}) + '_' + col1 + '_'
     temp_file_name = field_prefix + '.tmp'
     fldprefix = field_prefix + str(result_id)
+    word_count_max = {word_count_max}
     nwords = {word_count_max}
     group_length = {group_length}
-    numbers_count = nwords * int(300/group_length)
+    numbers_count = int(300/group_length)
     error = 0
-    max_words = 0
     
     def __init__(self):
         global dicts
@@ -48,18 +49,7 @@ class cls_agent_{id}:
             self.dict1 = self.pd.read_csv(workdir+'dict_'+self.col1+'.csv', dtype={'value': object}).set_index('key')["value"].to_dict()
         else:
             self.dict1 = {v:k for k,v in dicts[self.col1].items()} # make key=number, value=string
-        
-        # if parameter word_count_max == 0 then use max_words found in the given field
-        if self.nwords == 0:
-            # map dict fields
-            self.dfx = self.pd.DataFrame()
-            self.dfx[self.col1] = self.df[self.col1].map(self.dict1)
-            # find size of longest in terms of words record
-            self.max_words = self.dfx[self.col1].apply(self._no_of_words).max()
-            self.nwords = self.max_words
-            self.numbers_count = self.nwords * int(300/self.group_length)
-            print("Longest record has " + str(self.max_words) + " words. Using it as GloVe size limit.")
-            
+                  
         self.cols = []
         # prepare list of new columns
         for i in range(0,self.numbers_count):
@@ -68,8 +58,8 @@ class cls_agent_{id}:
             
         # if saved temp object exists then load it from filesystem to carry on from last good batch
         if self.os.path.isfile(workdir + self.temp_file_name):
-            self.df_np = self.pd.read_pickle(workdir + self.temp_file_name, compression='bz2')
-            self.df_np = self.df_np.values.tolist()
+            self.df_np = self.pd.read_pickle(workdir + self.temp_file_name, compression='bz2') 
+            self.df_np = self.df_np.values.tolist()     # convert dataframe to list for faster appending of rows
             self.index_start_from = len(self.df_np)
             print ('df_np array loaded from temp file, continue conversion from row: ', self.index_start_from+1)
         else:
@@ -103,35 +93,49 @@ class cls_agent_{id}:
         
         for index, row in self.dfx.iloc[self.index_start_from:].iterrows():
             i+=1
-            sline1 = self._tokenize(row[self.col1])
-     
-            attempts = 0
-            not_successful = True
-            r = requests.Response()
-            while not_successful and attempts < 10:
-               try:
-                  r = requests.post("{glove_host}", verify=False, data={'action': 'glove_numbers', 'word_count_max': self.nwords, 'group_length': self.group_length, 'string': sline1})
-                  r.raise_for_status()
-                  not_successful = False
-               except requests.exceptions.RequestException as e:
-                  attempts += 1
-                  print (e)
-                  if attempts < 10:
-                     print ('Error GloVe request at row: ', index, '; retry attempt: ', attempts)
-                  else:
-                     print ('Error GloVe request at row: ', index, '; FATAL no more attempts')
-                     self.error = 1
-                     return
+            sline1 = self._tokenize(row[self.col1])           
+            self.nwords = len(sline1.split())
             
-            obj = json.loads(r.text)
-            values = [self.np.float32(v) for v in obj['data'].split(',')]
-            if len(values)!=self.numbers_count:
-                print("wrong response length. got", len(values), ", must be", self.numbers_count, ", nwords", self.nwords, ", grp_length", self.group_length)
-                print("string:", sline1)
-                print("#error")
-                self.error = 1
-                return
-            
+            if self.nwords > 0:
+                # if parameter word_count_max == 0 then use number of words in the current line
+                # otherwise use fixed number of words for every line
+                if self.word_count_max > 0:
+                    self.nwords = self.word_count_max
+                
+                attempts = 0
+                not_successful = True
+                r = requests.Response()
+                while not_successful and attempts < 10:
+                   try:
+                      r = requests.post("{glove_host}", verify=False, data={'action': 'glove_numbers', 'word_count_max': self.nwords, 'group_length': self.group_length, 'string': sline1})
+                      r.raise_for_status()
+                      not_successful = False
+                   except requests.exceptions.RequestException as e:
+                      attempts += 1
+                      print (e)
+                      if attempts < 10:
+                         print ('Error GloVe request at row: ', index, '; retry attempt: ', attempts)
+                      else:
+                         print ('Error GloVe request at row: ', index, '; FATAL no more attempts')
+                         self.error = 1
+                         return
+               
+                obj = json.loads(r.text)
+                values = [self.np.float32(v) for v in obj['data'].split(',')]
+                if len(values) != self.nwords*self.numbers_count:
+                    print("wrong response length. got", len(values), ", must be", self.nwords*self.numbers_count, ", nwords", self.nwords, ", grp_length", self.group_length)
+                    print("string:", sline1)
+                    print("#error")
+                    self.error = 1
+                    return
+
+                glove_array = self.np.array(values)                     # convert continous list of all words gloves to 1-D array
+                glove_array = glove_array.reshape((self.nwords, -1))    # convert 1-D array to NWords*GloveSize array
+                glove_array = glove_array.sum(axis=0)                   # simple sum of all words glove numbers
+                values = glove_array.tolist()                           # convert back to list for faster appending
+            else:
+                values = [0] * self.numbers_count
+               
             self.df_np.append(values)
 
             if i>=block and block>=10:

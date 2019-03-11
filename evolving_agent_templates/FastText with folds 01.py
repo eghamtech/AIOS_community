@@ -1,8 +1,10 @@
 #start_of_genes_definitions
 #key=data;  type=random_array_of_fields;  length=13
 #key=fields_to_use;  type=random_int;  from=13;  to=13;  step=1
-#key=field_ev_prefix;  type=random_from_set;  set=ev_field_lgbm_
-#key=nfolds;  type=random_int;  from=10;  to=10;  step=1
+#key=map_dict;  type=random_from_set;  set=True
+#key=field_ev_prefix;  type=random_from_set;  set=ev_field_ft
+#key=field_ev_prefix_use_source_names;  type=random_from_set;  set=True
+#key=nfolds;  type=random_int;  from=3;  to=3;  step=1
 #key=random_folds;  type=random_from_set;  set=True
 #key=random_folds_size;  type=random_float;  from=0.3;  to=0.3;  step=0.1
 #key=use_validation_set;  type=random_from_set;  set=True
@@ -20,33 +22,34 @@
 #key=train_set_to_2;  type=random_from_set;  set=
 #key=valid_set_from_2;  type=random_from_set;  set=
 #key=valid_set_to_2;  type=random_from_set;  set=
-#key=include_columns_type;  type=random_from_set;  set=
+#key=include_columns_type;  type=random_from_set;  set=is_dict_only
 #key=include_columns_containing;  type=random_from_set;  set=
 #key=ignore_columns_containing;  type=random_from_set;  set=%ev_field%
-#key=objective_multiclass;  type=random_from_set;  set='multiclass','multiclassova'
-#key=objective_regression;  type=random_from_set;  set='regression_l1','regression_l2','huber','fair','poisson','quantile','mape','gamma','tweedie'
-#key=boosting_type;  type=random_from_set;  set='gbdt','rf','dart'
-#key=learning_rate;  type=random_float;  from=0.001;  to=0.06;  step=0.001
-#key=sub_feature;  type=random_float;  from=0.1;  to=1;  step=0.01
-#key=bagging_fraction;  type=random_float;  from=0.2;  to=1;  step=0.01
-#key=bagging_freq;  type=random_int;  from=10;  to=100;  step=1
-#key=num_leaves;  type=random_int;  from=16;  to=4096;  step=1
-#key=tree_learner;  type=random_from_set;  set='serial','feature','data','voting'
-#key=min_data;  type=random_int;  from=1;  to=200;  step=5
-#key=max_bin;  type=random_int;  from=2;  to=512;  step=1
-#key=min_data_in_bin;  type=random_int;  from=3;  to=10;  step=1
-#key=min_gain_to_split;  type=random_float;  from=0.0;  to=1;  step=0.02
-#key=feature_fraction_seed;  type=random_int;  from=1;  to=10;  step=1
-#key=bagging_seed;  type=random_int;  from=1;  to=10;  step=1
-#key=boost_from_average;  type=random_from_set;  set=True,False
-#key=is_unbalance;  type=random_from_set;  set=True,False
-#key=lambda_l1;  type=random_float;  from=0;  to=1;  step=0.01
-#key=lambda_l2;  type=random_float;  from=0;  to=1;  step=0.01
+#key=objective_multiclass;  type=random_from_set;  set='multiclass'
+#key=objective_regression;  type=random_from_set;  set='regression_l1'
+#key=loss_function;  type=random_from_set;  set='softmax','ns'
+#key=learning_rate;  type=random_float;  from=0.001;  to=1;  step=0.001
+#key=sampling_threshold;  type=random_float;  from=0.00005;  to=0.0002;  step=0.00001
+#key=lr_update_rate;  type=random_int;  from=10;  to=300;  step=1
+#key=size_of_word_vectors;  type=random_int;  from=5;  to=150;  step=1
+#key=size_of_context_window;  type=random_int;  from=1;  to=20;  step=1
+#key=epoch;  type=random_int;  from=3;  to=25;  step=1
+#key=negatives_sampled;  type=random_int;  from=1;  to=20;  step=1
+#key=word_ngrams;  type=random_int;  from=1;  to=5;  step=1
+#key=bucket;  type=random_int;  from=500000;  to=4000000;  step=1000
+#key=cutoff;  type=random_int;  from=0;  to=0;  step=1
+#key=dsub;  type=random_int;  from=1;  to=4;  step=1
+#key=min_char_ngrams;  type=random_int;  from=0;  to=4;  step=1
+#key=max_char_ngrams;  type=random_int;  from=0;  to=8;  step=1
+#key=min_word_occurences;  type=random_int;  from=2;  to=10;  step=1
+#key=min_count_label;  type=random_int;  from=0;  to=0;  step=1
+#key=qnorm; type=random_from_set;  set=False
+#key=qout; type=random_from_set;  set=False
 #key=start_fold;  type=random_from_set;  set=0
-#key=max_depth;  type=random_int;  from=-1;  to=10;  step=1
-#key=num_threads;  type=random_int;  from=4;  to=4;  step=1
+#key=num_threads;  type=random_int;  from=1;  to=1;  step=1
+#key=clean_text_v;  type=random_int;  from=0;  to=2;  step=1
 #key=use_float32_dtype; type=random_from_set;  set=True
-#key=min_perf_criteria;  type=random_float;  from=0.6;  to=0.6;  step=0.1
+#key=min_perf_criteria;  type=random_float;  from=0.55;  to=0.55;  step=0.1
 #key=use_thresholds_train; type=random_from_set;  set=True
 #key=print_to_html; type=random_from_set;  set=True
 #key=print_tables; type=random_from_set;  set=False
@@ -57,26 +60,24 @@
 # https://github.com/eghamtech/AIOS/wiki/Evolving-Agents
 # https://github.com/eghamtech/AIOS/wiki/AI-OS-Introduction
 
+# this agent concatenates given columns into sentences by rows and applies FastText to learn the target
+# if column is a text one and map_dict==True it loads corresponding text from its dictionary
+# if column is just numeric or map_dict==False then the number is converted into text
+
 class cls_ev_agent_{id}:
     import warnings
     warnings.filterwarnings("ignore")
 
     import pandas as pd
-    import lightgbm as lgb
     import numpy as np
     import math
     import os.path, bz2, pickle
     import dateutil
     import calendar
+    from sklearn.externals import joblib
 
     # obtain a unique ID for the current instance
     result_id = {id}
-    # create new field name based on "field_ev_prefix" with unique instance ID
-    # and filename to save new field data
-    field_ev_prefix = "{field_ev_prefix}"
-    output_column   = field_ev_prefix + str(result_id)
-    output_filename = output_column + ".csv"
-
     # obtain random field (same for all instances within the evolution) which will be the prediction target for this instance/evolution
     target_definition = "{field_to_predict}"
     # field definition received from the kernel contains two parts: name of the field and CSV filename that holds the actual data
@@ -89,6 +90,9 @@ class cls_ev_agent_{id}:
     fields_to_use = {fields_to_use}
     start_fold    = {start_fold}
     nfolds        = {nfolds}
+    map_dict      = {map_dict}
+    clean_text_v  = {clean_text_v}
+    field_ev_prefix_use_source_names = {field_ev_prefix_use_source_names}
     
     dicts_agent   = {}         # various dictionary to be saved as part of model
     
@@ -96,7 +100,6 @@ class cls_ev_agent_{id}:
     # based on filter criteria training + validation sets will not necessarily constitute all data, the remainder will be called "test set"
     filter_column   = "{filter_column}"
     filter_column_2 = "{filter_column_2}"
-    # filter_filename = trainfile   # filter columns are in trainfile which must be specified in Constants - deprecated
     
     # fields matching the specified prefix will not be used in the model
     ignore_columns_containing  = "{ignore_columns_containing}"
@@ -114,22 +117,37 @@ class cls_ev_agent_{id}:
     use_validation_set = {use_validation_set}
     use_float32_dtype  = {use_float32_dtype}
     min_perf_criteria  = {min_perf_criteria}
-    
+   
     def __init__(self):
         from datetime import datetime
+        import pyfasttext as ft
         self.np.random.seed({random_seed_init})        # set same seed for every run of this agent's instance
         
         # remove the target field for this instance from the data used for training
         if self.target_definition in self.data_defs:
             self.data_defs.remove(self.target_definition)
         
+        # create new field name based on "field_ev_prefix" with unique instance ID
+        # and filename to save new field data
+        self.field_ev_prefix = "{field_ev_prefix}"        
+        if self.field_ev_prefix_use_source_names:                   
+            # concatenate all source column names into new field prefix
+            col_max_length = int(200 / self.fields_to_use)             # allow 200 characters max combined col name length
+            for i in range(0,self.fields_to_use):
+                col_name = self.data_defs[i].split("|")[0]
+                col_name = col_name[:col_max_length]                   # only take first col_max_length chars from each column
+                self.field_ev_prefix = self.field_ev_prefix + '_' + col_name
+        
+        self.output_column   = self.field_ev_prefix + '_' + str(self.result_id)
+        self.output_filename = self.output_column + ".csv"
+        
+        # if saved models for the target field already exist then load them from filesystem              
         if self.os.path.isfile(workdir + self.output_column + '_dicts.model'):
             rfile = self.bz2.BZ2File(workdir + self.output_column + '_dicts.model', 'r')
             self.dicts_agent = self.pickle.load(rfile)
             rfile.close()
             print (str(datetime.now()), self.output_column + ' dictionaries model loaded')
             
-            # if saved model for the target field already exists then load it from filesystem
             self.predictors = []
             if self.dicts_agent['params']['random_folds'] == False:
                 from_fold = self.start_fold
@@ -140,10 +158,10 @@ class cls_ev_agent_{id}:
 
             for fold in range(from_fold, to_fold):
                 if self.os.path.isfile(workdir + self.output_column + "_fold" + str(fold) + ".model"):
-                    predictor_stored = self.lgb.Booster(model_file=workdir + self.output_column + "_fold" + str(fold) + ".model")
+                    predictor_stored = ft.FastText(workdir + self.output_column + "_fold" + str(fold) + ".model")
                     self.predictors.append(predictor_stored)
-                    print (str(datetime.now()), self.output_column + ' fold ' + str(fold) + ' predictor model loaded')
-                
+                    print (str(datetime.now()), self.output_column + ' fold ' + str(fold) + ' predictor model loaded')    
+                      
         # obtain columns definitions to filter data set by
         if self.is_set(self.filter_column):
             self.filter_filename = self.filter_column.split("|")[1]
@@ -152,67 +170,34 @@ class cls_ev_agent_{id}:
         if self.is_set(self.filter_column_2):
             self.filter_filename_2 = self.filter_column_2.split("|")[1]
             self.filter_column_2   = self.filter_column_2.split("|")[0]
-    
+
     
     def is_set(self, s):
         return len(s)>0 and s!="0"
 
     def is_use_column(self, s):
         # AIOS Kernel now selects columns using agent parameters
-        # so no need to filter inside the agent
-        
-        # determine whether given column should be ignored
-#         s = s.replace('%','')           # remove % used for pattern matching as now required to filter column by AIOS itself
-        
+        # so no need to filter inside the agent       
         if s.find(self.target_col)>=0:  # ignore columns that contain target_col as they are a derivative of the target
             return False 
-#         # ignore other columns containing specified ignore parameter value
-#         if self.is_set(self.ignore_columns_containing) and s.find(self.ignore_columns_containing.replace('%',''))>=0:
-#             return False
-#         # include all columns if include parameter not specified
-#         if not self.is_set(self.include_columns_containing):
-#             return True
-#         # include columns specified in parameter
-#         if self.is_set(self.include_columns_containing) and s.find(self.include_columns_containing.replace('%',''))>=0:
-#             return True 
-#         # ignore all other columns
-#         return False
-        return True
         
+        return True
+
     def timestamp(self, x):
         return self.calendar.timegm(self.dateutil.parser.parse(x).timetuple())
-     
+
     def print_tbl(self, mesg):
         if self.print_tables:
             print (mesg)
     
-    def print_html(self, df, max_rows=50, max_cols=25, jup_notebook=True):
+    def print_html(self, df, max_rows=50, max_cols=30, jup_notebook=True):
         if self.print_to_html:
             print (df.to_html(max_rows=max_rows,max_cols=max_cols))
         elif jup_notebook:
             display (df)
         else:
             print (df)
-    
-    def print_feature_importance(self, n_top_features=25, col_idx=0, importance_type='gain', print_table = True, to_html = True ):
-        importance = self.bst.feature_importance(importance_type=importance_type).round(2)   
-        features   = self.bst.feature_name()    
-        # join field names and their importance values
-        col_name = 'Importance_' + str(col_idx)
-        fi = self.pd.DataFrame( {'Feature': features, col_name: importance} )
-        
-        if print_table:
-            print ()
-            self.print_html( fi.sort_values(by=[col_name], ascending=False), max_rows=n_top_features*2, max_cols=2 )
-    
-        return fi
-    
-    #def plot_feature_importance(self, n_top_features=20, graph_width=10, graph_height=25, importance_type='gain'):
-        # this method can be used in Jupyter notebook to plot features of a particular model created by AIOS
-        # copy whole DNA code as executed by AIOS into notebook with global Constants, initialise/run the class first
-        #%matplotlib inline
-        #self.lgb.plot_importance(self.bst, max_num_features=n_top_features, importance_type=importance_type).figure.set_size_inches(graph_width,graph_height)
-
+            
     def my_log_loss(self, a, b):
         eps = 1e-9
         sum1 = 0.0
@@ -220,11 +205,78 @@ class cls_ev_agent_{id}:
             bx = min(max(b[k],eps), 1-eps)
             sum1 += 1.0 * a[k] * self.math.log(bx) + 1.0 * (1 - a[k]) * self.math.log(1 - bx)
         return -sum1/len(a)
-
+    
     def list_mean(self, lst, precision=4):
         return self.np.round(sum(lst)/float(len(lst)), decimals=precision)
+    
+    def clean_text_v1(self, s):
+        import re
+        s = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", s)     
+        s = re.sub(r"\'s", " 's", s) 
+        s = re.sub(r"\'ve", " \'ve", s) 
+        s = re.sub(r"n\'t", " n\'t", s) 
+        s = re.sub(r"\'re", " \'re", s) 
+        s = re.sub(r"\'d", " \'d", s) 
+        s = re.sub(r"\'ll", " \'ll", s) 
+        s = re.sub(r",", " , ", s) 
+        s = re.sub(r"!", " ! ", s) 
+        s = re.sub(r"\(", " ( ", s) 
+        s = re.sub(r"\)", " ) ", s) 
+        s = re.sub(r"\?", " ? ", s) 
+        s = re.sub(r"\s{2,}", " ", s)       
+        s = s.strip().lower()
+        return  s
+    
+    def clean_text_v2(self, s):
+        # Replace numbers and symbols with language
+        s = s.replace('&', ' and ')
+        s = s.replace('@', ' at ')
+        s = s.replace('0', ' zero ')
+        s = s.replace('1', ' one ')
+        s = s.replace('2', ' two ')
+        s = s.replace('3', ' three ')
+        s = s.replace('4', ' four ')
+        s = s.replace('5', ' five ')
+        s = s.replace('6', ' six ')
+        s = s.replace('7', ' seven ')
+        s = s.replace('8', ' eight ')
+        s = s.replace('9', ' nine ')
+        return  s
+    
+    def clean_text(self, s):
+        if self.clean_text_v == 1:
+            s = self.clean_text_v1(s)
+        elif self.clean_text_v == 2:
+            s = self.clean_text_v1(s)
+            s = self.clean_text_v2(s)
+        
+        return  s
+          
+    def ft_predict_proba(self, ft_predictor, xt, k, params):
+        try:
+            xt = xt.to_string(header=False, index=False, index_names=False).split('\n')
+            # xt = [' '.join(element.split()) for element in xt]
+            pred = ft_predictor.predict_proba(xt, k=k)
+            # convert to list of dictionaries for each predicted item as predictor produces list of lists of tuples
+            # [[('0', 0.712891), ('1', 0.285156)],
+            #  [('0', 0.644531), ('1', 0.353516)],
+            #  [('1', 0.945313), ('0', 0.0527344)],
+            pred = [dict(r) for r in pred]   
+            # [{'0': 0.712891, '1': 0.285156},
+            #  {'0': 0.644531, '1': 0.353516},
+            #  {'0': 0.0527344, '1': 0.945313},   
 
-    def load_columns(self):
+            if params['objective'] == self.objective_multiclass:
+                pred = [list(r.values()) for r in pred]           # convert to list of lists with all labels probabilities
+            else:
+                pred = [r.get('1', 0) for r in pred]              # get probability for label '1' from each prediction item
+        except Exception as e:
+            print ('FastText Predict Proba error: ', e)
+            pred = 0
+        
+        return pred
+                    
+    def load_columns(self, map_dict=True):
         from datetime import datetime
         # start from loading the target field
         df_all = self.pd.read_csv(workdir+self.target_file, usecols=[self.target_col])[[self.target_col]]
@@ -233,29 +285,34 @@ class cls_ev_agent_{id}:
         columns     = [self.target_col]
         # assemble a list of column names given to the agent by AIOS in (data) DNA gene up-to (fields_to_use) gene
         print (str(datetime.now()), " start loading data")
-        cols_count = 0
         block_progress = 0
-        block = int(self.fields_to_use/20)
+        block          = int(self.fields_to_use/20)
 
-        for i in range(0,len(self.data_defs)):
+        for i in range(0,self.fields_to_use):
             col_name  = self.data_defs[i].split("|")[0]
             file_name = self.data_defs[i].split("|")[1]
 
             if self.is_use_column(col_name):
-                cols_count+=1
-                if cols_count > self.fields_to_use:
-                    break
-
                 df_col = self.pd.read_csv(workdir+file_name, usecols=[col_name])[[col_name]]       # read column from csv file
-                if df_col[col_name].dtype == self.np.float64 and self.use_float32_dtype:           # downcast to save memory if needed
-                    df_col[col_name] = df_col[col_name].astype(self.np.float32)
+                
+                # if column has associated dictionary csv then it's a text column, replace column with actual text
+                dict_file_name = workdir+'dict_'+col_name+'.csv'
+                if self.os.path.isfile(dict_file_name) and map_dict:
+                    dict1 = self.pd.read_csv(dict_file_name, dtype={'value': object}).set_index('key')["value"].to_dict()  # load dictionary
+                    df_col[col_name] = df_col[col_name].map(dict1)                                                         # map and replace
+                    self.dicts_agent[col_name] = dict1                                                                     # save in dictionary of dictionaries to be saved with model files
+                    
+                    df_col[col_name] = df_col[col_name].astype(str).apply(self.clean_text)
+                else:
+                    if df_col[col_name].dtype == self.np.float64 and self.use_float32_dtype:           # downcast to save memory if needed
+                        df_col[col_name] = df_col[col_name].astype(self.np.float32)
 
-                df_all = df_all.merge(df_col, left_index=True, right_index=True)
+                df_all = df_all.merge(df_col, left_index=True, right_index=True)                       # add column to the overall dataframe
 
                 block_progress += 1
                 if (block_progress >= block):
                     block_progress = 0
-                    print (str(datetime.now()), " data loaded: ", round(cols_count/self.fields_to_use*100,0), "%")
+                    print (str(datetime.now()), " data loaded: ", round((i+1)/self.fields_to_use*100,0), "%")
 
                 # some columns may appear multiple times in data_defs as inhereted from parents DNA
                 # assemble a list of columns assigning unique names to repeating columns
@@ -274,23 +331,40 @@ class cls_ev_agent_{id}:
         
     def apply(self, df_add):
         # this method is called by AIOS when additional data is supplied and needs to be predicted on
+        # df_add shouldn't contain columns with text values - only numeric
+        global dicts
+        # by this stage all text fields should have been converted to dictionary values by previous agents that created such fields in AIOS
+        # since this agent works with text fields, actual text values will be obtained from the global dicts variable
         columns_new = []
         columns     = []
         # assemble a list of column names given to the agent by AIOS in (data) DNA gene up-to (fields_to_use) gene
-        cols_count = 0
-        for i in range(0,len(self.data_defs)):
+        for i in range(0,self.fields_to_use):
             col_name  = self.data_defs[i].split("|")[0]
             file_name = self.data_defs[i].split("|")[1]
             
-            if self.is_use_column(col_name):
-                cols_count+=1
-                if cols_count > self.fields_to_use:
-                    break
-                # assemble dataframe column by column
-                if cols_count==1:
-                    df = df_add[[col_name]]
+            if self.is_use_column(col_name):               
+                # assemble dataframe column by column             
+                df_col = df_add[[col_name]]
+                              
+#                 # if column has associated dictionary csv then it's a text column, replace column with actual text
+#                 dict_file_name = workdir+'dict_'+col_name+'.csv'
+#                 if self.os.path.isfile(dict_file_name) and self.map_dict:
+#                     dict1 = self.pd.read_csv(dict_file_name, dtype={'value': object}).set_index('key')["value"].to_dict()  # load dictionary
+#                     df_col[col_name] = df_col[col_name].map(dict1)                                                         # map and replace
+                
+                # if column is in global dictionary then it's a text column, replace column with actual text
+                if col_name in dicts:
+                    reverse_dict1    = {v:k for k,v in dicts[col_name].items()}
+                    df_col[col_name] = df_col[col_name].map(reverse_dict1)                   
+                    df_col[col_name] = df_col[col_name].astype(str).apply(self.clean_text)    
                 else:
-                    df = df.merge(df_add[[col_name]], left_index=True, right_index=True)
+                    if df_col[col_name].dtype == self.np.float64 and self.use_float32_dtype:                               # downcast to save memory if needed
+                        df_col[col_name] = df_col[col_name].astype(self.np.float32)
+                        
+                if i==0:
+                    df = df_col[[col_name]]
+                else:
+                    df = df.merge(df_col[[col_name]], left_index=True, right_index=True)
                 
                 # some columns may appear multiple times in data_defs as inhereted from parents DNA
                 # assemble a list of columns assigning unique names to repeating columns
@@ -303,40 +377,32 @@ class cls_ev_agent_{id}:
         
         # rename columns in df to unique names
         df.columns = columns_new
- 
+        
         # predict new data set in df applying model for each fold used for training
         pred = self.np.zeros(len(df))
         if self.dicts_agent['params']['objective'] == self.objective_multiclass:
             # create a list of lists depending on number of classes used for training 
             # as each prediction is a list of values against each class
             pred = [self.np.zeros(self.dicts_agent['params']['num_class']) for i in range(len(df))]
-        
-        if self.dicts_agent['params']['random_folds'] == False:
-            for fold in range(self.start_fold, self.nfolds):
-                pred += self.predictors[fold-self.start_fold].predict(df)
-            
-            if self.dicts_agent['params']['objective'] == self.objective_multiclass:
-                # select class with largest total value in case of multiclass
-                pred = self.np.argmax(pred, axis=1)
-            else:
-                # average prediction over all folds in case of binary or regression   
-                pred = pred / (self.nfolds - self.start_fold)
+         
+        # apply model from each fold created during training and sum their predictions
+        for fold in range(0, len(self.predictors)):
+            pred += self.ft_predict_proba( self.predictors[fold], df, k=self.dicts_agent['params']['num_class'], params=self.dicts_agent['params'] )
+                    
+        if self.dicts_agent['params']['objective'] == self.objective_multiclass:
+            # select class with largest total value in case of multiclass
+            pred = self.np.argmax(pred, axis=1)
         else:
-            for fold in range(0, len(self.predictors)):
-                pred += self.predictors[fold].predict(df)
-             
-            if self.dicts_agent['params']['objective'] == self.objective_multiclass:
-                # select class with largest total value in case of multiclass
-                pred = self.np.argmax(pred, axis=1)
-            else:
-                # average prediction over all folds in case of binary or regression    
-                pred = pred / len(self.predictors)
-            
-        df_add[self.output_column] = pred
-
+            # average prediction over all folds in case of binary or regression   
+            pred = pred / len(self.predictors)
         
+        df_add[self.output_column] = pred
+        
+
     def run(self, mode):
         # this is main method called by AIOS with supplied DNA Genes to process data
+        # import fasttext
+        import pyfasttext as ft
         from sklearn.metrics import roc_auc_score, precision_score, accuracy_score, log_loss
         from sklearn.metrics import confusion_matrix, f1_score
         from sklearn.metrics import classification_report
@@ -344,40 +410,42 @@ class cls_ev_agent_{id}:
         from sklearn.model_selection import StratifiedShuffleSplit
         from math import sqrt
         from datetime import datetime
-        import shap
         print ("enter run mode " + str(mode))  # 0=work for fitness only;  1=make new output field
         
-        # prepare LGBM parameters    
-        params = {}
-        params['learning_rate'] = {learning_rate}       # shrinkage_rate
-        params['boosting_type'] = {boosting_type}
-        params['sub_feature']   = {sub_feature}         # feature_fraction (small values => use very different submodels)
-        params['bagging_fraction'] = {bagging_fraction} # sub_row
-        params['bagging_freq']  = {bagging_freq}
-        params['num_leaves']    = {num_leaves}          # num_leaf
-        params['tree_learner']  = {tree_learner}
-        params['min_data']      = {min_data}            # min_data_in_leaf
-        params['max_bin']       = {max_bin}
-        params['min_data_in_bin']       = {min_data_in_bin} 
-        params['min_gain_to_split']     = {min_gain_to_split}
-        params['verbose'] = 1
-        params['feature_fraction_seed'] = {feature_fraction_seed}
-        params['bagging_seed']  = {bagging_seed}
-        params['max_depth']     = {max_depth}
-        params['num_threads']   = {num_threads}
-        params['boost_from_average'] = {boost_from_average}
-        params['is_unbalance']  = {is_unbalance}
-        params['lambda_l1']     = {lambda_l1}
-        params['lambda_l2']     = {lambda_l2}
-        params['random_valid']       = {random_valid}
-        params['random_valid_size']  = {random_valid_size}
-        params['random_valid_folds'] = {random_valid_folds}
-        params['random_folds']       = {random_folds}
-        params['random_folds_size']  = {random_folds_size}
+        # prepare all parameters   
+        # https://fasttext.cc/docs/en/options.html
+        params                           = {}
+        params['learning_rate']          = {learning_rate}    
+        params['lr_update_rate']         = {lr_update_rate}
+        params['size_of_word_vectors']   = {size_of_word_vectors}
+        params['size_of_context_window'] = {size_of_context_window}
+        params['epoch']                  = {epoch}
+        params['negatives_sampled']      = {negatives_sampled}
+        params['word_ngrams']            = {word_ngrams}            # max length of word ngram [1]
+        params['loss_function']          = {loss_function}
+        params['bucket']                 = {bucket}                 # number of buckets [2000000]
+        params['cutoff']                 = {cutoff}
+        params['dsub']                   = {dsub}
+        params['min_char_ngrams']        = {min_char_ngrams}        # min length of char ngram [3]
+        params['max_char_ngrams']        = {max_char_ngrams}        # max length of char ngram [6]
+        params['min_word_occurences']    = {min_word_occurences}    # minimal number of word occurrences [5]
+        params['min_count_label']        = {min_count_label}        # minimal number of label occurrences [0]
+        params['qnorm']                  = {qnorm}
+        params['qout']                   = {qout}
+        params['verbose']                = 2
+        params['num_threads']            = {num_threads}
+        params['sampling_threshold']     = {sampling_threshold}
+        params['clean_text_v']           = {clean_text_v}
+        
+        params['random_valid']           = {random_valid}
+        params['random_valid_size']      = {random_valid_size}
+        params['random_valid_folds']     = {random_valid_folds}
+        params['random_folds']           = {random_folds}
+        params['random_folds_size']      = {random_folds_size}
         
         # obtain indexes for train and remainder sets
         # load target column as it may be needed for filtering and removing NaN targets from training
-        df_filter_column = self.pd.read_csv(workdir+self.target_file, usecols=[self.target_col])
+        df_filter_column       = self.pd.read_csv(workdir+self.target_file, usecols=[self.target_col])
         filter_condition_train = df_filter_column[self.target_col].notnull()
         
         # applying specified filters
@@ -406,16 +474,17 @@ class cls_ev_agent_{id}:
         df_filter_column[self.output_column+'_folds_pred_count'] = 0   # number of predictions for each record as different folds will predict different records, so each record may have unique number of predictions
   
         # load specified in data_defs colums of data up-to fields_to_use quantity
-        df_all = self.load_columns()
+        df_all = self.load_columns(map_dict=self.map_dict)
         original_row_count = len(df_all)
-
+        
         # analyse target column whether it is binary which may result in different loss function used
         target_classes = df_all[df_all[self.target_col].notnull()].sort_values(self.target_col)[self.target_col].unique().tolist()
         is_binary = target_classes==[0, 1]
-        
+            
         if is_binary:
             print ("detected binary target: use AUC/LOGLOSS")
             params['objective'] = 'binary'
+            params['num_class'] = 2                              # FT is multi-class predictor, hence even in binary it has 2 classes
             params['metric']    = ['auc', 'binary_logloss']
         elif self.is_set(self.objective_multiclass):
             print ("detected multi-class target: use Multi-LogLoss/Error; " + str(len(target_classes)) + " classes")
@@ -428,7 +497,7 @@ class cls_ev_agent_{id}:
             print ("detected regression target: use RMSE/MAE")
             params['objective'] = self.objective_regression
             params['metric']    = ['rmse','mae']
-        
+
         self.dicts_agent['params'] = params
             
         train_sets_ix                = []      # indexes of each whole set used for training
@@ -439,7 +508,7 @@ class cls_ev_agent_{id}:
         weighted_result_folds        = []
         weighted_auc_folds           = []
         valid_result_folds           = []
-        valid_result_auc_folds       = []
+        valid_result_auc_folds       = []    
         
         fold_all = 0
         # repeat cross-validation multiple times with different validation set each time
@@ -535,7 +604,7 @@ class cls_ev_agent_{id}:
                     print ()
                     print (str(datetime.now())," Train/Test FOLD: ", fold)
                     range_start = fold*block
-                    range_end = (fold+1)*block
+                    range_end   = (fold+1)*block
                     if fold==self.nfolds-1:
                         range_end = len(df)
                     range_predict = range(range_start, range_end)
@@ -555,57 +624,95 @@ class cls_ev_agent_{id}:
                     print ("x_test rows count: " + str(len(x_test)))
                     print ("x_train rows count: " + str(len(x_train)))
 
-                    y_train = x_train[self.target_col]                    # separate training fields and the target
-                    x_train = x_train.drop(self.target_col, 1)
+                    # convert target to multi-class labels
+                    x_train[self.target_col + '_label'] = '__label__'
+                    x_train[self.target_col] = x_train[self.target_col + '_label'] + x_train[self.target_col].fillna(-1).astype(int).astype(str)
+                    x_train.drop(self.target_col + '_label', 1, inplace=True)
 
-                    y_test = x_test[self.target_col]
-                    x_test = x_test.drop(self.target_col, 1)
+                    y_test = x_test[self.target_col]                     # save test real test labels as needed later for evaluation
+                    # x_test[self.target_col + '_label'] = '__label__'
+                    # x_test[self.target_col] = x_test[self.target_col + '_label'] + x_test[self.target_col].fillna(-1).astype(int).astype(str)
+                    # x_test.drop(self.target_col + '_label', 1, inplace=True)
 
-                    x_train = self.lgb.Dataset( x_train, label=y_train)    # convert DF to lgb.Dataset as required by LGBM
+                    # create text files as required by FastText
+                    x_train.to_csv(workdir+self.output_column+'_train.tmp', sep=' ', header=False, index=False) 
+                    # x_test.to_csv(workdir+self.output_column+'_test.tmp', sep=' ', header=False, index=False)
 
-                    num_round=10000
-                    watchlist  = [self.lgb.Dataset(x_test, label=y_test)]
-                    predictor  = self.lgb.train( params, x_train, num_round, watchlist, verbose_eval = 100, early_stopping_rounds=100 )          
-                    self.bst   = predictor  # save trained model as class attribute, so e.g., plot_feature_importance can be called
+                    try:
+                        print (str(datetime.now())," start learning")
+                        self.predictor = ft.FastText(label='__label__')
+                        self.predictor.supervised(  input=workdir+self.output_column+'_train.tmp', output=workdir + self.output_column + "_fold" + str(fold) + ".model",
+                                                    bucket       = params['bucket'],
+                                                    cutoff       = params['cutoff'],
+                                                    dim          = params['size_of_word_vectors'],
+                                                    dsub         = params['dsub'],
+                                                    epoch        = params['epoch'],
+                                                    loss         = params['loss_function'],
+                                                    lr           = params['learning_rate'],
+                                                    lrUpdateRate = params['lr_update_rate'],
+                                                    maxn         = params['max_char_ngrams'],
+                                                    minCount     = params['min_word_occurences'],
+                                                    minCountLabel= params['min_count_label'],
+                                                    minn         = params['min_char_ngrams'],
+                                                    neg          = params['negatives_sampled'],
+            #                                         qnorm        = params['qnorm'],
+            #                                         qout         = params['qout'],
+                                                    t            = params['sampling_threshold'],
+                                                    thread       = params['num_threads'], 
+                                                    verbose      = params['verbose'],
+                                                    wordNgrams   = params['word_ngrams'],
+                                                    ws           = params['size_of_context_window']
+                                                 )
+                        print (str(datetime.now())," end learning")
+                    except Exception as e:
+                        print ('FastText Supervised error: ', e)
+                        print ("fitness="     +str(99999))
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold) + ".model.bin")
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold) + ".model.vec")            
+                        self.os.remove(workdir + self.output_column + '_train.tmp')
+                        return
 
-                    fi = self.print_feature_importance(n_top_features=25, col_idx=fold, importance_type='gain', print_table = False, to_html = self.print_to_html )
-                    if fold == self.start_fold:
-                        self.fi_total = fi
-                    else:
-                        self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
-
-                    if mode==1:
-                        predictor.save_model(workdir + self.output_column + "_fold" + str(fold) + ".model")
-
-                    pred = predictor.predict(x_test)
                     if is_binary:
-                        result = self.my_log_loss(y_test, pred)
-                        # show various metrics as per
-                        # http://scikit-learn.org/stable/modules/model_evaluation.html#classification-report
-                        result_roc_auc = roc_auc_score(y_test, pred)
-                        print ("ROC AUC score: ", result_roc_auc)
-                        
-                        if self.print_tables:
-                            result_cm = confusion_matrix(y_test, (pred>0.5))  # assume 0.5 probability threshold
-                            result_cr = classification_report(y_test, (pred>0.5))                      
-                            print ("Confusion Matrix:\n", result_cm)
-                            print ("Classification Report:\n", result_cr)
-                    elif self.is_set(self.objective_multiclass):
-                        pred_classes = self.np.argmax(pred, axis=1)
-                        result_prec_score = precision_score(y_test, pred_classes, average='weighted')
-                        result_acc_score  = accuracy_score(y_test, pred_classes)
-                        result_cm = confusion_matrix(y_test, pred_classes)
-                        result_cr = classification_report(y_test, pred_classes)
-                        if self.print_tables:
-                            print ("Precision score: ", result_prec_score)
-                            print ("Accuracy score: ", result_acc_score)
-                            print ("Confusion Matrix:\n", result_cm)
-                            print ("Classification Report:\n", result_cr)
-                        result = predictor.best_score['valid_0']['multi_logloss']
-                        result_roc_auc = f1_score(y_test, pred_classes, average='weighted')
+                        k = 2
                     else:
-                        result = sum(abs(y_test-pred))/len(y_test)
-                        #result = sqrt(mean_squared_error(y_test, pred))
+                        k = len(self.predictor.labels)
+
+                    pred = self.ft_predict_proba( x_test.drop(self.target_col, axis=1), k=k, params=params )
+                    print (str(datetime.now())," test set predicted")
+
+                    try:
+                        if is_binary:
+                            result = self.my_log_loss(y_test, pred)
+                            # show various metrics as per
+                            # http://scikit-learn.org/stable/modules/model_evaluation.html#classification-report
+                            result_roc_auc = roc_auc_score(y_test, pred)
+                            result_cm = confusion_matrix(y_test, (self.np.asarray(pred)>0.5))  # assume 0.5 probability threshold
+                            result_cr = classification_report(y_test, (self.np.asarray(pred)>0.5))
+                            print ("ROC AUC score: ", result_roc_auc)
+                            
+                            if self.print_tables:
+                                print ("Confusion Matrix:\n",      result_cm)
+                                print ("Classification Report:\n", result_cr)
+                        elif self.is_set(self.objective_multiclass):
+                            pred_classes = self.np.argmax(pred, axis=1)
+                            result_prec_score = precision_score(y_test, pred_classes, average='weighted')
+                            result_acc_score  = accuracy_score(y_test, pred_classes)
+                            result_cm = confusion_matrix(y_test, pred_classes)
+                            result_cr = classification_report(y_test, pred_classes)
+                            
+                            if self.print_tables:
+                                print ("Precision score: ", result_prec_score)
+                                print ("Accuracy score: ",  result_acc_score)
+                                print ("Confusion Matrix:\n",      result_cm)
+                                print ("Classification Report:\n", result_cr)
+                            # result = predictor.best_score['valid_0']['multi_logloss']
+                            result_roc_auc = f1_score(y_test, pred_classes, average='weighted')
+                            result = result_roc_auc
+                        else:
+                            result = sum(abs(y_test-pred))/len(y_test)
+                            #result = sqrt(mean_squared_error(y_test, pred))
+                    except Exception as e:
+                        print ('Evaluation error: ', e)
 
                     print ("result: ", result)
 
@@ -614,28 +721,38 @@ class cls_ev_agent_{id}:
                     count_records_notnull += len(pred)
 
                     # predict all examples in the original test set which may include erroneous examples previously removed
-                    #pred_all_test = predictor.predict(self.lgb.Dataset(x_test_orig.drop(self.target_col, axis=1)))
-                    pred_all_test = predictor.predict(x_test_orig.drop(self.target_col, axis=1))
-                    #prediction = self.np.concatenate([prediction,pred_all_test])
+                    pred = self.ft_predict_proba( x_test_orig.drop(self.target_col, axis=1), k=k, params=params )
+                    print (str(datetime.now())," original test set predicted")
+
                     if params['objective'] == self.objective_multiclass:
-                        prediction[range_start:range_end] = self.np.argmax(pred_all_test, axis=1)
+                        prediction[range_start:range_end] = self.np.argmax(pred, axis=1)
                     else:
-                        prediction[range_start:range_end] = pred_all_test
+                        prediction[range_start:range_end] = pred
 
                     # predict validation and remainder sets examples
                     if self.use_validation_set:
-                        predicted_valid_set += predictor.predict(df_valid.drop(self.target_col, axis=1))
-                        predicted_test_set  += predictor.predict(df_test.drop(self.target_col, axis=1))
+                        pred = self.ft_predict_proba( df_valid.drop(self.target_col, axis=1), k=k, params=params )        
+                        predicted_valid_set += pred
+                        print (str(datetime.now())," validation set predicted")
 
-                predicted_valid_set = predicted_valid_set / (self.nfolds - self.start_fold)
-                predicted_test_set  = predicted_test_set / (self.nfolds - self.start_fold)
+                        pred = self.ft_predict_proba( df_test.drop(self.target_col, axis=1), k=k, params=params )          
+                        predicted_test_set += pred
+                        print (str(datetime.now())," remainder set predicted")
+
+                    self.os.remove(workdir + self.output_column + '_train.tmp')
+                    self.os.remove(workdir + self.output_column + "_fold" + str(fold) + ".model.vec")
+                    if mode==1:
+                        self.os.rename(workdir + self.output_column + "_fold" + str(fold) + ".model.bin", workdir + self.output_column + "_fold" + str(fold) + ".model")
+                    else:
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold) + ".model.bin")
+                      
             else:
                 # select folds using random shuffle and stratify
                 sss = StratifiedShuffleSplit(n_splits=self.nfolds, test_size=params['random_folds_size'])
                 y   = df[[self.target_col]]
                 iy  = y.reset_index(level=0)                                                    # create copy, save existing index in 'index' column and reset index 
-                y.reset_index(drop=True, inplace=True)                                          # reset index because StratifiedShuffleSplit will reset index anyway
-    
+                y.reset_index(drop=True, inplace=True)     
+              
                 predictors = []
                 for train_ix, test_ix in sss.split(self.np.zeros(len(y)), y):
                     fold_all += 1
@@ -654,76 +771,113 @@ class cls_ev_agent_{id}:
 
                     print ("x_test  rows count: " + str(len(x_test)))
                     print ("x_train rows count: " + str(len(x_train)))
+                    
+                    # convert target to multi-class labels
+                    x_train[self.target_col + '_label'] = '__label__'
+                    x_train[self.target_col] = x_train[self.target_col + '_label'] + x_train[self.target_col].fillna(-1).astype(int).astype(str)
+                    x_train.drop(self.target_col + '_label', 1, inplace=True)
+                    
+                    y_test = x_test[self.target_col]                     # save test real test labels as needed later for evaluation
+                    
+                    # create text files as required by FastText
+                    x_train.to_csv(workdir+self.output_column+'_train.tmp', sep=' ', header=False, index=False) 
 
-                    y_train = x_train[self.target_col]                    # separate training fields and the target
-                    x_train = x_train.drop(self.target_col, 1)
+                    try:
+                        print (str(datetime.now())," start learning")
+                        predictor = ft.FastText(label='__label__')
+                        predictor.supervised(  input=workdir+self.output_column+'_train.tmp', output=workdir + self.output_column + "_fold" + str(fold_all) + ".model",
+                                                    bucket       = params['bucket'],
+                                                    cutoff       = params['cutoff'],
+                                                    dim          = params['size_of_word_vectors'],
+                                                    dsub         = params['dsub'],
+                                                    epoch        = params['epoch'],
+                                                    loss         = params['loss_function'],
+                                                    lr           = params['learning_rate'],
+                                                    lrUpdateRate = params['lr_update_rate'],
+                                                    maxn         = params['max_char_ngrams'],
+                                                    minCount     = params['min_word_occurences'],
+                                                    minCountLabel= params['min_count_label'],
+                                                    minn         = params['min_char_ngrams'],
+                                                    neg          = params['negatives_sampled'],
+            #                                         qnorm        = params['qnorm'],
+            #                                         qout         = params['qout'],
+                                                    t            = params['sampling_threshold'],
+                                                    thread       = params['num_threads'], 
+                                                    verbose      = params['verbose'],
+                                                    wordNgrams   = params['word_ngrams'],
+                                                    ws           = params['size_of_context_window']
+                                                 )
+                        print (str(datetime.now())," end learning")
+                    except Exception as e:
+                        print ('FastText Supervised error: ', e)
+                        print ("fitness="     +str(99999))
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold_all) + ".model.bin")
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold_all) + ".model.vec")            
+                        self.os.remove(workdir + self.output_column + '_train.tmp')
+                        return
 
-                    y_test = x_test[self.target_col]
-                    x_test = x_test.drop(self.target_col, 1)
-
-                    x_train = self.lgb.Dataset( x_train, label=y_train)    # convert DF to lgb.Dataset as required by LGBM
-
-                    num_round=10000
-                    watchlist  = [self.lgb.Dataset(x_test, label=y_test)]
-                    predictor  = self.lgb.train( params, x_train, num_round, watchlist, verbose_eval = 100, early_stopping_rounds=100 )          
-                    self.bst   = predictor  # save trained model as class attribute, so e.g., plot_feature_importance can be called
-
-                    fi = self.print_feature_importance(n_top_features=25, col_idx=fold_all, importance_type='gain', print_table = False, to_html = self.print_to_html )
-                    if fold_all == 1:
-                        self.fi_total = fi
-                    else:
-                        self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
-
-                    pred = predictor.predict(x_test)
-
-                    y_test = self.np.asarray(y_test)
+                    # remove temp files created during learning
+                    self.os.remove(workdir + self.output_column + '_train.tmp')
+                    self.os.remove(workdir + self.output_column + "_fold" + str(fold_all) + ".model.vec")
+                    if mode==0:
+                        self.os.remove(workdir + self.output_column + "_fold" + str(fold_all) + ".model.bin")
+    
                     if is_binary:
-                        result = self.my_log_loss(y_test, pred)
-                        # show various metrics as per
-                        # http://scikit-learn.org/stable/modules/model_evaluation.html#classification-report
-                        result_roc_auc = roc_auc_score(y_test, pred)
-                        print ("ROC AUC score: ", result_roc_auc)
+                        k = 2
+                    else:
+                        k = len(predictor.labels)
+
+                    pred = self.ft_predict_proba( predictor, x_test.drop(self.target_col, axis=1), k=k, params=params )
+                    print (str(datetime.now())," test set predicted")
+
+                    try:
+                        y_test = self.np.asarray(y_test)
+                        if is_binary:
+                            result = self.my_log_loss(y_test, pred)
+                            # show various metrics as per
+                            # http://scikit-learn.org/stable/modules/model_evaluation.html#classification-report
+                            result_roc_auc = roc_auc_score(y_test, pred)
+                            result_cm = confusion_matrix(y_test, (self.np.asarray(pred)>0.5))  # assume 0.5 probability threshold
+                            result_cr = classification_report(y_test, (self.np.asarray(pred)>0.5))
+                            print ("ROC AUC score: ", result_roc_auc)
+                            
+                            if self.print_tables:
+                                print ("Confusion Matrix:\n",      result_cm)
+                                print ("Classification Report:\n", result_cr)
+                                
+                            # assign predictions to corresponding test records only
+                            df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred']       += pred
+                            df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred_count'] += 1
                         
-                        if self.print_tables:
-                            result_cm      = confusion_matrix(y_test, (pred>0.5))  # assume 0.5 probability threshold
-                            result_cr      = classification_report(y_test, (pred>0.5))                           
-                            print ("Confusion Matrix:\n", result_cm)
-                            print ("Classification Report:\n", result_cr)
-                                                                      
-                        # assign predictions to corresponding test records only
-                        df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred']       += pred
-                        df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred_count'] += 1
-                        
-                    elif params['objective'] == self.objective_multiclass:
-                        try:
+                        elif self.is_set(self.objective_multiclass):
                             pred_classes = self.np.argmax(pred, axis=1)
                             result_prec_score = precision_score(y_test, pred_classes, average='weighted')
                             result_acc_score  = accuracy_score(y_test, pred_classes)
                             result_cm = confusion_matrix(y_test, pred_classes)
                             result_cr = classification_report(y_test, pred_classes)
+                            
                             if self.print_tables:
                                 print ("Precision score: ", result_prec_score)
                                 print ("Accuracy score: ",  result_acc_score)
                                 print ("Confusion Matrix:\n",      result_cm)
                                 print ("Classification Report:\n", result_cr)
-                                
-                            result = predictor.best_score['valid_0']['multi_logloss']
+                            # result = predictor.best_score['valid_0']['multi_logloss']
                             result_roc_auc = f1_score(y_test, pred_classes, average='weighted')
+                            result = result_roc_auc
                             
                             # assign predictions to corresponding test records only
                             df_pred = self.np.array(df_filter_column_mc.loc[test_ix_orig])                     # get array of previous folds test records predictions
                             df_pred += pred
                             df_filter_column_mc.loc[test_ix_orig] = df_pred                                    # temp df holding multi-class prediction
                             df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred_count'] += 1
-                        except Exception as e:
-                            print (e)          
-                    else:
-                        result = sum(abs(y_test-pred))/len(y_test)
-                        #result = sqrt(mean_squared_error(y_test, pred))
-                        
-                        # assign predictions to corresponding test records only
-                        df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred']       += pred
-                        df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred_count'] += 1
+                        else:
+                            result = sum(abs(y_test-pred))/len(y_test)
+                            #result = sqrt(mean_squared_error(y_test, pred))
+                            # assign predictions to corresponding test records only
+                            df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred']       += pred
+                            df_filter_column.loc[test_ix_orig, self.output_column+'_folds_pred_count'] += 1
+                    except Exception as e:
+                        print ('Evaluation error: ', e)
 
                     print ("result: ", result)
 
@@ -735,10 +889,10 @@ class cls_ev_agent_{id}:
                         print ("Minimum performance criteria: " + str(self.min_perf_criteria) + " not met! result_roc_auc: " + str(result_roc_auc))
                         return
 
-                    predictors.append([predictor,result,result_roc_auc])
+                    predictors.append(    [predictor,result,result_roc_auc])
                     predictors_all.append([predictor,result,result_roc_auc])    # add predictors to global list across all validation folds
-
-
+          
+        
                 predictors = self.pd.DataFrame(predictors, columns=['predictor','result','result_roc_auc']).sort_values(by=['result_roc_auc'], ascending=False)
                 print ('\nFolds Performance Overall:')
                 self.print_html( predictors, max_rows=50, max_cols=5 )
@@ -754,17 +908,17 @@ class cls_ev_agent_{id}:
                 print('Selected predictor ids: ', [worst_predictor_idx, avg_predictor_idx, best_predictor_idx])
                 
                 #x_test = df.drop(self.target_col, axis=1)
-
+                    
                 for fold in range(0, len(predictors)):
                     # predict entire train set using selected predictors - no longer needed as prediction is assembled from individual test folds
                     # it will predict records used for actual model training so results expected to be good 
                     # this may also result in leakage if used in a pipeline
-                    #prediction += predictors[fold].predict(x_test)
+                    #prediction += self.ft_predict_proba( predictors[fold], x_test, k=k, params=params )
                     
                     # predict remainder set
                     if len(df_test) > 0:
-                        pred = predictors[fold].predict(df_test.drop(self.target_col, axis=1))
-                        predicted_test_set  += pred
+                        pred = self.ft_predict_proba( predictors[fold], df_test.drop(self.target_col, axis=1), k=k, params=params )
+                        predicted_test_set  += pred 
                         
                         if params['objective'] == self.objective_multiclass: 
                             # assign predictions to corresponding test records only
@@ -779,7 +933,7 @@ class cls_ev_agent_{id}:
                     # predict validation set
                     if self.use_validation_set:
                         df_valid_x = df_valid.drop(self.target_col, axis=1)
-                        pred       = predictors[fold].predict(df_valid_x)
+                        pred = self.ft_predict_proba( predictors[fold], df_valid_x, k=k, params=params )
                         predicted_valid_set += pred
                         
                         if params['objective'] == self.objective_multiclass: 
@@ -791,25 +945,20 @@ class cls_ev_agent_{id}:
                         else:
                             df_filter_column.loc[valid_sets_ix[valid_fold], self.output_column+'_folds_pred']       += pred
                             df_filter_column.loc[valid_sets_ix[valid_fold], self.output_column+'_folds_pred_count'] += 1
-                            
-                        if fold == 0:
-                            valid_set_shap_values  = shap.TreeExplainer(predictors[fold]).shap_values(df_valid_x)
-                        else:
-                            valid_set_shap_values += shap.TreeExplainer(predictors[fold]).shap_values(df_valid_x)
 
                 prediction = prediction / len(predictors)
                 predicted_test_set  = predicted_test_set  / len(predictors)
                 predicted_valid_set = predicted_valid_set / len(predictors)
-
+                
                 df_filter_column[self.output_column+'_folds_pred_avg'] = df_filter_column[self.output_column+'_folds_pred'] / df_filter_column[self.output_column+'_folds_pred_count']
 
-
+                
             weighted_result = weighted_result/count_records_notnull
             weighted_auc    = weighted_auc/count_records_notnull
-            
+
             weighted_result_folds.append(weighted_result)
             weighted_auc_folds.append(weighted_auc)
-            
+
             print ("\nweighted_result:", weighted_result)
             print ("weighted_auc:",      weighted_auc)
 
@@ -817,7 +966,7 @@ class cls_ev_agent_{id}:
             if params['objective'] == self.objective_multiclass:             
                 predicted_valid_set = self.np.argmax(predicted_valid_set, axis=1)
                 predicted_test_set  = self.np.argmax(predicted_test_set, axis=1)
-
+        
             if self.use_validation_set:
                 print()
                 print ("*************  VALIDATION SET RESULTS  *****************")
@@ -839,13 +988,9 @@ class cls_ev_agent_{id}:
                         
                         if self.print_tables:
                             result_cm = confusion_matrix(y_valid, (self.np.asarray(predicted_valid_set)>0.5))  # assume 0.5 probability threshold
-                            print ("Confusion Matrix:\n", result_cm)
+                            print ("Confusion Matrix:\n",      result_cm)
                             result_cr = classification_report(y_valid, (self.np.asarray(predicted_valid_set)>0.5))
                             print ("Classification Report:\n", result_cr)
-                        
-                        valid_result_folds.append(result)
-                        valid_result_auc_folds.append(result_roc_auc)
-
                     except Exception as e:
                         print (e)
                         return             # no point to carry on with more folds
@@ -858,53 +1003,38 @@ class cls_ev_agent_{id}:
                         
                         if self.print_tables:
                             print ("Precision score: ", result_prec_score)
-                            print ("Accuracy score: ", result_acc_score)
-                            print ("Confusion Matrix:\n", result_cm)
+                            print ("Accuracy score: ",  result_acc_score)
+                            print ("Confusion Matrix:\n",      result_cm)
                             print ("Classification Report:\n", result_cr)
                             
                         result = 1 - result_prec_score
                         result_roc_auc = f1_score(y_valid, predicted_valid_set, average='weighted')
                     except Exception as e:
-                        print (e)          
+                        print (e)
+                        return             # no point to carry on with more folds
                 else:
                     #result = sum(abs(y_valid-predicted_valid_set))/len(y_valid)
                     #print ("MAE: ", result)
                     result = sqrt(mean_squared_error(y_valid, predicted_valid_set))
-                    valid_result_folds.append(result)
+                    result_roc_auc = 1/result
                     print ("Root Mean Squared Error: ", result)
-
+                    
+                valid_result_folds.append(result)
+                valid_result_auc_folds.append(result_roc_auc)         
                 print ("\n************* END of VALIDATION SET RESULTS  ****************\n")
-        
         
         print ('\nTrain/Valid Folds Predictor Performance Overall:')
         predictors_all = self.pd.DataFrame(predictors_all, columns=['predictor','result','result_roc_auc']).sort_values(by=['result_roc_auc'], ascending=False)
         self.print_html( predictors_all, max_rows=50, max_cols=5 )
-                
-        # combine feature importance results from all folds into one table
-        fi_cols = [col for col in self.fi_total.columns if 'Importance' in col] 
-        self.fi_total['Importance_AVG']      = self.np.round(self.fi_total[fi_cols].sum(axis=1)/fold_all, decimals=2)  
-        self.fi_total['Importance_AVG_perc'] = self.np.round(100 * self.fi_total['Importance_AVG'] / self.fi_total['Importance_AVG'].sum(axis=0), decimals=2)
-
-        print ('\nFEATURE Importance Overall:')
-        self.print_html( self.fi_total[['Feature','Importance_AVG','Importance_AVG_perc']].sort_values(by=['Importance_AVG'], ascending=False), max_rows=200, max_cols=4 )
-           
-        #print ('\nFEATURE Importance SHAP last validation:')
-        #shap.initjs()
-        #shap.summary_plot(valid_set_shap_values, df_valid_x)
         
         # save indexes used for splits
         self.dicts_agent['train_sub_sets_ix'] = train_sub_sets_ix
         self.dicts_agent['test_sub_sets_ix']  = test_sub_sets_ix
         
-        # save performance summaries across all validation folds
-        self.dicts_agent['fi_total']                               = self.fi_total
-        self.dicts_agent['fi_valid_shap']                          = valid_set_shap_values
-        self.dicts_agent['fi_valid_x']                             = df_valid_x
-        
         #############################################################
         #                   OUTPUT
         #############################################################
-        
+
         if mode==1:
             # save dictionary of all auxiliry data and params into file
             sfile = self.bz2.BZ2File(workdir + self.output_column + '_dicts.model', 'w')
@@ -930,15 +1060,24 @@ class cls_ev_agent_{id}:
                 predictors = [predictors_all['predictor'][worst_predictor_idx], predictors_all['predictor'][avg_predictor_idx], predictors_all['predictor'][best_predictor_idx]]
                 print('Selected predictor ids: ', [worst_predictor_idx, avg_predictor_idx, best_predictor_idx])
                 
+                self.os.rename(workdir + self.output_column + "_fold" + str(worst_predictor_idx+1) + ".model.bin", workdir + self.output_column + "_fold" + str(0) + ".model")
+                self.os.rename(workdir + self.output_column + "_fold" + str(  avg_predictor_idx+1) + ".model.bin", workdir + self.output_column + "_fold" + str(1) + ".model")
+                self.os.rename(workdir + self.output_column + "_fold" + str( best_predictor_idx+1) + ".model.bin", workdir + self.output_column + "_fold" + str(2) + ".model")
+                
+                for i in range(1,fold_all+1):
+                    try:
+                        self.os.remove(workdir + self.output_column + "_fold" + str(i) + ".model.bin")
+                    except OSError:
+                        pass
+                    
                 #x_test = df_all.drop(self.target_col, axis=1)
                 #prediction = self.np.zeros(len(x_test))
                 #if params['objective'] == self.objective_multiclass:
                 #    prediction = [self.np.zeros(params['num_class']) for i in range(len(x_test))]
                 
-                for fold in range(0, len(predictors)):
+                #for fold in range(0, len(predictors)):
                     # predict entire data set
-                    #prediction += predictors[fold].predict(x_test)
-                    predictors[fold].save_model(workdir + self.output_column + "_fold" + str(fold) + ".model")
+                #    prediction += self.ft_predict_proba( predictors[fold], x_test, k=k, params=params )
 
                 # if multiclass convert list of lists into list of predicted labels
                 if params['objective'] == self.objective_multiclass:             
@@ -949,20 +1088,21 @@ class cls_ev_agent_{id}:
                 else:
                     #df_filter_column[self.output_column] = prediction / len(predictors)
                     df_filter_column[self.output_column] = df_filter_column[self.output_column+'_folds_pred'] / df_filter_column[self.output_column+'_folds_pred_count']
-            
+                
             df_filter_column[[self.output_column]].to_csv(workdir+self.output_filename)
             print ("#add_field:"+self.output_column+",N,"+self.output_filename+","+str(original_row_count))
             
-            print ("b_fitness="   +str(1-self.list_mean(weighted_auc_folds)*self.list_mean(valid_result_auc_folds)))
+            print ("b_fitness="   +str(round(1-self.list_mean(weighted_auc_folds)*self.list_mean(valid_result_auc_folds),4)))
             print ("b_result_1="+str(self.list_mean(weighted_result_folds)))
             print ("b_result_2="+str(self.list_mean(weighted_auc_folds)))
             print ("b_result_3="+str(self.list_mean(valid_result_folds)))
             print ("b_result_4="+str(self.list_mean(valid_result_auc_folds)))
         else:
-            print ("fitness="     +str(1-self.list_mean(weighted_auc_folds)*self.list_mean(valid_result_auc_folds)))  # main fitness metric
+            print ("fitness="     +str(round(1-self.list_mean(weighted_auc_folds)*self.list_mean(valid_result_auc_folds),4)))  # main fitness metric
             print ("out_result_1="+str(self.list_mean(weighted_result_folds)))                                        # Log Loss in train/test CV
             print ("out_result_2="+str(self.list_mean(weighted_auc_folds)))                                           # ROC AUC in train/test CV
             print ("out_result_3="+str(self.list_mean(valid_result_folds)))                                           # main fitness on Validation
             print ("out_result_4="+str(self.list_mean(valid_result_auc_folds)))                                       # ROC AUC on Validation
 
+                      
 ev_agent_{id} = cls_ev_agent_{id}()
