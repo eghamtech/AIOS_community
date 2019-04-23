@@ -1,7 +1,7 @@
 #start_of_genes_definitions
 #key=data;  type=random_array_of_fields;  length=200
 #key=fields_to_use;  type=random_int;  from=100;  to=200;  step=1
-#key=field_ev_prefix;  type=random_from_set;  set=ev_field_svm_
+#key=field_ev_prefix;  type=random_from_set;  set=ev_field_xgb_
 #key=nfolds;  type=random_int;  from=3;  to=3;  step=1
 #key=random_folds;  type=random_from_set;  set=True
 #key=random_folds_size;  type=random_float;  from=0.3;  to=0.3;  step=0.1
@@ -25,17 +25,19 @@
 #key=ignore_columns_containing;  type=random_from_set;  set=%ev_field%
 #key=objective_multiclass;  type=random_from_set;  set='multi:softprob'
 #key=objective_regression;  type=random_from_set;  set='reg:squarederror'
-#key=svm_C;  type=random_float;  from=0.01;  to=5.0;  step=0.01
-#key=svm_kernel; type=random_from_set;  set='linear','poly','rbf','sigmoid'
-#key=kernel_poly_degree;  type=random_int;  from=1;  to=7;  step=1
-#key=kernel_gamma;  type=random_float;  from=0.0001;  to=0.5;  step=0.0001
-#key=kernel_coef;  type=random_float;  from=0.0;  to=0.5;  step=0.001
-#key=probability_output;  type=random_from_set;  set=True
-#key=shrinking;  type=random_from_set;  set=True,False
-#key=stopping_tolerance;  type=random_float;  from=0.001;  to=0.01;  step=0.001
-#key=class_weighted;  type=random_from_set;  set=True,False
-#key=class_0_weight;  type=random_float;  from=0.0;  to=1;  step=0.01
-#key=class_1_weight;  type=random_float;  from=0.0;  to=1;  step=0.01
+#key=booster;  type=random_from_set;  set='gbtree','gblinear','dart'
+#key=colsample_bytree;  type=random_float;  from=0.1;  to=1;  step=0.05
+#key=colsample_bylevel;  type=random_float;  from=0.1;  to=1;  step=0.05
+#key=colsample_bynode;  type=random_float;  from=0.1;  to=1;  step=0.05
+#key=subsample;  type=random_float;  from=0.2;  to=1;  step=0.05
+#key=eta;  type=random_float;  from=0.05;  to=1;  step=0.05
+#key=gamma;  type=random_float;  from=0.0;  to=5;  step=0.05
+#key=lambda;  type=random_float;  from=0.0;  to=5;  step=0.05
+#key=alpha;  type=random_float;  from=0.0;  to=5;  step=0.05
+#key=max_depth;  type=random_int;  from=1;  to=20;  step=1
+#key=min_child_weight;  type=random_int;  from=1;  to=20;  step=1
+#key=max_delta_step;  type=random_int;  from=0;  to=10;  step=1
+#key=scale_pos_weight;  type=random_float;  from=0.2;  to=2;  step=0.05
 #key=num_round;  type=random_int;  from=100;  to=1500;  step=50
 #key=verbosity;  type=random_from_set;  set=1
 #key=binary_balancing;  type=random_from_set;  set=False
@@ -65,8 +67,7 @@ class cls_ev_agent_{id}:
     import os.path, bz2, pickle
     import pandas as pd
     import math
-    from sklearn import svm
-    from sklearn.externals import joblib
+    import xgboost as xgb
 
     # obtain a unique ID for the current instance
     result_id = {id}
@@ -199,24 +200,26 @@ class cls_ev_agent_{id}:
         return None
 
     def model_params(self):
-        self.params['svm_C']                    = {svm_C}
-        self.params['svm_kernel']               = {svm_kernel}
-        self.params['kernel_poly_degree']       = {kernel_poly_degree}
-        self.params['kernel_gamma']             = {kernel_gamma}
-        self.params['kernel_coef']              = {kernel_coef}
-        self.params['probability_output']       = {probability_output}
-        self.params['shrinking']                = {shrinking}
-        self.params['stopping_tolerance']       = {stopping_tolerance}
-        self.params['class_weighted']           = {class_weighted}
-        self.params['class_0_weight']           = {class_0_weight}
-        self.params['class_1_weight']           = {class_1_weight}
+        self.params['booster']                  = {booster}
+        self.params['colsample_bytree']         = {colsample_bytree}
+        self.params['colsample_bylevel']        = {colsample_bylevel}
+        self.params['colsample_bynode']         = {colsample_bynode}
+        self.params['subsample']                = {subsample}
+        self.params['eta']                      = {eta}
+        self.params['gamma']                    = {gamma}
+        self.params['lambda']                   = {lambda}
+        self.params['alpha']                    = {alpha}
+        self.params['max_depth']                = {max_depth}
+        self.params['min_child_weight']         = {min_child_weight}
+        self.params['max_delta_step']           = {max_delta_step}
+        self.params['scale_pos_weight']         = {scale_pos_weight}
         self.params['num_round']                = {num_round}
         self.params['nthread']                  = {nthread}
         self.params['verbosity']                = {verbosity}
 
         if self.is_binary:
             print ("detected binary target: use AUC/LOGLOSS and Binary Cross Entropy loss evaluation")
-            self.params['objective']                   = 'ovr'
+            self.params['objective']                   = 'binary:logistic'
             self.params['eval_metric']                 = ['logloss','auc', 'aucpr']
             self.params['num_class']                   = 1
             #self.params['s_loss_function']             = 'binary_crossentropy'
@@ -247,74 +250,59 @@ class cls_ev_agent_{id}:
             # params['metric']             = ['rmse', 'mae']
 
     def model_init(self):
-        svm_model = self.svm.SVC(
-                            C            = self.params['svm_C'],
-                            class_weight = {0:self.params['class_0_weight'], 1:self.params['class_1_weight']},
-                            coef0        = self.params['kernel_coef'],
-                            decision_function_shape = 'ovr',
-                            degree       = self.params['kernel_poly_degree'],
-                            gamma        = self.params['kernel_gamma'],
-                            kernel       = self.params['svm_kernel'],
-                            max_iter     = self.params['num_round'],
-                            probability  = self.params['probability_output'],
-                            random_state = self.rn_seed_init,
-                            shrinking    = self.params['shrinking'],
-                            tol          = self.params['stopping_tolerance'],
-                            verbose      = self.params['verbosity'] )
-        return svm_model
+        return None
 
     def model_predict(self, predictor, xt):
         try:
-            pred = predictor.predict_proba(self.np.array(xt))
-            pred = pred[:,1]
+            xt   = self.xgb.DMatrix(xt, feature_names=xt.columns)
+            pred = predictor.predict(xt)
 
         except Exception as e:
-            print ('SVM Predict error: ', e)
+            print ('XGBoost Predict error: ', e)
             pred = 0
 
         return pred
 
     def model_save(self, predictor, file_path):
-        self.joblib.dump(predictor, file_path)
+        predictor.save_model(file_path)
 
     def model_load(self, file_path):
-        predictor = self.joblib.load(file_path)
+        predictor = self.xgb.Booster()
+        predictor.load_model(file_path)
 
         return predictor
 
 
-    # def model_feature_importance(self, predictor, n_top_features=25, col_idx=0, importance_type='gain', print_table = True, to_html = True ):
-    #     # get feature importance dictionary and transform it to list of original features
-    #     importance_dict = predictor.get_score(importance_type=importance_type)
-    #     importance_list = [ [k,v] for k, v in importance_dict.items() ]
-    #
-    #     col_name = 'Importance_' + str(col_idx)
-    #     fi = self.pd.DataFrame( importance_list, columns = ['Feature', col_name] )
-    #     fi[col_name] = fi[col_name].round(4)
-    #
-    #     if col_idx == 1:
-    #         self.fi_total = fi
-    #     else:
-    #         self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
-    #
-    #     if print_table:
-    #         print ()
-    #         self.print_html( fi.sort_values(by=[col_name], ascending=False), max_rows=n_top_features*2, max_cols=2 )
+    def model_feature_importance(self, predictor, n_top_features=25, col_idx=0, importance_type='gain', print_table = True, to_html = True ):
+        # get feature importance dictionary and transform it to list of original features
+        importance_dict = predictor.get_score(importance_type=importance_type)
+        importance_list = [ [k,v] for k, v in importance_dict.items() ]
+
+        col_name = 'Importance_' + str(col_idx)
+        fi = self.pd.DataFrame( importance_list, columns = ['Feature', col_name] )
+        fi[col_name] = fi[col_name].round(4)
+
+        if col_idx == 1:
+            self.fi_total = fi
+        else:
+            self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
+
+        if print_table:
+            print ()
+            self.print_html( fi.sort_values(by=[col_name], ascending=False), max_rows=n_top_features*2, max_cols=2 )
+
 
 
     def model_train(self, ml_model, x_train, y_train, x_test, y_test, current_fold):
-        #x_train = self.xgb.DMatrix( x_train, label=y_train, feature_names=x_train.columns)    # convert DF to xgb.DMatrix as required by XGB
-        #x_test  = self.xgb.DMatrix( x_test,  label=y_test,  feature_names=x_test.columns)
+        x_train = self.xgb.DMatrix( x_train, label=y_train, feature_names=x_train.columns)    # convert DF to xgb.DMatrix as required by XGB
+        x_test  = self.xgb.DMatrix( x_test,  label=y_test,  feature_names=x_test.columns)
 
-        #watchlist = [(x_train,'train'), (x_test, 'test')]
-        #predictor = self.xgb.train( self.params, x_train, self.params['num_round'], watchlist, verbose_eval=100, early_stopping_rounds=10 )
+        watchlist = [(x_train,'train'), (x_test, 'test')]
+        predictor = self.xgb.train( self.params, x_train, self.params['num_round'], watchlist, verbose_eval=100, early_stopping_rounds=10 )
 
-        #self.model_feature_importance(predictor, n_top_features=25, col_idx=current_fold, importance_type='gain', print_table = self.print_tables, to_html = self.print_to_html )
+        self.model_feature_importance(predictor, n_top_features=25, col_idx=current_fold, importance_type='gain', print_table = self.print_tables, to_html = self.print_to_html )
 
-        ml_model.fit( self.np.array(x_train), self.np.array(y_train) )
-        print ("Support Vectors per class: ", ml_model.n_support_)
-
-        return ml_model
+        return predictor
 
 
     def load_columns(self, map_dict=True):
@@ -1001,12 +989,12 @@ class cls_ev_agent_{id}:
         self.print_html(predictors_all, max_rows=50, max_cols=5)
 
         # combine feature importance results from all folds into one table
-        #fi_cols = [col for col in self.fi_total.columns if 'Importance' in col]
-        #self.fi_total['Importance_AVG']      = self.np.round(self.fi_total[fi_cols].sum(axis=1) / fold_all, decimals=2)
-        #self.fi_total['Importance_AVG_perc'] = self.np.round(100 * self.fi_total['Importance_AVG'] / self.fi_total['Importance_AVG'].sum(axis=0), decimals=2)
+        fi_cols = [col for col in self.fi_total.columns if 'Importance' in col]
+        self.fi_total['Importance_AVG']      = self.np.round(self.fi_total[fi_cols].sum(axis=1) / fold_all, decimals=2)
+        self.fi_total['Importance_AVG_perc'] = self.np.round(100 * self.fi_total['Importance_AVG'] / self.fi_total['Importance_AVG'].sum(axis=0), decimals=2)
 
-        #print ('\nFEATURE Importance Overall:')
-        #self.print_html( self.fi_total[['Feature', 'Importance_AVG', 'Importance_AVG_perc']].sort_values(by=['Importance_AVG'], ascending=False), max_rows=200, max_cols=4)
+        print ('\nFEATURE Importance Overall:')
+        self.print_html( self.fi_total[['Feature', 'Importance_AVG', 'Importance_AVG_perc']].sort_values(by=['Importance_AVG'], ascending=False), max_rows=200, max_cols=4)
 
         # print ('\nFEATURE Importance SHAP last validation:')
         # shap.initjs()
@@ -1017,7 +1005,7 @@ class cls_ev_agent_{id}:
         self.dicts_agent['test_sub_sets_ix']  = test_sub_sets_ix
 
         # save performance summaries across all validation folds
-        #self.dicts_agent['fi_total'] = self.fi_total
+        self.dicts_agent['fi_total'] = self.fi_total
         #self.dicts_agent['fi_valid_shap'] = valid_set_shap_values
         #self.dicts_agent['fi_valid_x'] = df_valid_x
 

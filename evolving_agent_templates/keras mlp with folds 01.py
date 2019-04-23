@@ -1,7 +1,7 @@
 #start_of_genes_definitions
-#key=data;  type=random_array_of_fields;  length=200
-#key=fields_to_use;  type=random_int;  from=100;  to=200;  step=1
-#key=field_ev_prefix;  type=random_from_set;  set=ev_field_svm_
+#key=data;  type=random_array_of_fields;  length=800
+#key=fields_to_use;  type=random_int;  from=200;  to=800;  step=1
+#key=field_ev_prefix;  type=random_from_set;  set=ev_field_mlp_
 #key=nfolds;  type=random_int;  from=3;  to=3;  step=1
 #key=random_folds;  type=random_from_set;  set=True
 #key=random_folds_size;  type=random_float;  from=0.3;  to=0.3;  step=0.1
@@ -21,28 +21,24 @@
 #key=valid_set_from_2;  type=random_from_set;  set=
 #key=valid_set_to_2;  type=random_from_set;  set=
 #key=include_columns_type;  type=random_from_set;  set=
-#key=include_columns_containing;  type=random_from_set;  set=
+#key=include_columns_containing;  type=random_from_set;  set=scaled_%
 #key=ignore_columns_containing;  type=random_from_set;  set=%ev_field%
-#key=objective_multiclass;  type=random_from_set;  set='multi:softprob'
-#key=objective_regression;  type=random_from_set;  set='reg:squarederror'
-#key=svm_C;  type=random_float;  from=0.01;  to=5.0;  step=0.01
-#key=svm_kernel; type=random_from_set;  set='linear','poly','rbf','sigmoid'
-#key=kernel_poly_degree;  type=random_int;  from=1;  to=7;  step=1
-#key=kernel_gamma;  type=random_float;  from=0.0001;  to=0.5;  step=0.0001
-#key=kernel_coef;  type=random_float;  from=0.0;  to=0.5;  step=0.001
-#key=probability_output;  type=random_from_set;  set=True
-#key=shrinking;  type=random_from_set;  set=True,False
-#key=stopping_tolerance;  type=random_float;  from=0.001;  to=0.01;  step=0.001
-#key=class_weighted;  type=random_from_set;  set=True,False
-#key=class_0_weight;  type=random_float;  from=0.0;  to=1;  step=0.01
-#key=class_1_weight;  type=random_float;  from=0.0;  to=1;  step=0.01
-#key=num_round;  type=random_int;  from=100;  to=1500;  step=50
-#key=verbosity;  type=random_from_set;  set=1
+#key=objective_multiclass;  type=random_from_set;  set='multiclass'
+#key=objective_regression;  type=random_from_set;  set='regression_l1'
+#key=optimizer;  type=random_from_set;  set='sgd','rmsprop','adagrad','adadelta','adam','adamax','nadam'
+#key=activation;  type=random_from_set;  set='relu','elu','selu','tanh','sigmoid','hard_sigmoid','softplus','softsign','softmax','linear'
+#key=activation_output;  type=random_from_set;  set='relu','elu','selu','tanh','sigmoid','hard_sigmoid','softplus','softsign','softmax','linear'
+#key=layers;  type=random_int;  from=2;  to=10;  step=1
+#key=neurons;  type=random_int;  from=4;  to=256;  step=1
+#key=batch_size;  type=random_int;  from=5;  to=256;  step=1
+#key=epochs;  type=random_int;  from=5;  to=100;  step=1
+#key=early_stopping_min_delta; type=random_float;  from=0.01;  to=0.04;  step=0.01
+#key=dropout;  type=random_float;  from=0.02;  to=0.7;  step=0.02
 #key=binary_balancing;  type=random_from_set;  set=False
 #key=binary_balancing_0;  type=random_float;  from=0.1;  to=1;  step=0.02
 #key=binary_balancing_1;  type=random_float;  from=0.1;  to=1;  step=0.02
 #key=start_fold;  type=random_from_set;  set=0
-#key=nthread;  type=random_int;  from=4;  to=4;  step=1
+#key=num_threads;  type=random_int;  from=1;  to=1;  step=1
 #key=use_float32_dtype; type=random_from_set;  set=True
 #key=min_perf_criteria;  type=random_float;  from=0.6;  to=0.6;  step=0.1
 #key=print_to_html; type=random_from_set;  set=True
@@ -65,8 +61,6 @@ class cls_ev_agent_{id}:
     import os.path, bz2, pickle
     import pandas as pd
     import math
-    from sklearn import svm
-    from sklearn.externals import joblib
 
     # obtain a unique ID for the current instance
     result_id = {id}
@@ -88,7 +82,7 @@ class cls_ev_agent_{id}:
     fields_to_use = {fields_to_use}
     start_fold    = {start_fold}
     nfolds        = {nfolds}
-    num_threads   = {nthread}
+    num_threads   = {num_threads}
     rn_seed_init  = {random_seed_init}
 
     params        = {}             # ML algo parameters
@@ -121,7 +115,7 @@ class cls_ev_agent_{id}:
     # https://github.com/fchollet/keras/issues/2280#issuecomment-306959926
 
     #import os
-    #os.environ['PYTHONHASHSEED'] = rn_seed_init
+    #os.environ['PYTHONHASHSEED'] = '0'
 
     # The below is necessary for starting Numpy generated random numbers
     # in a well-defined initial state.
@@ -196,125 +190,153 @@ class cls_ev_agent_{id}:
             return auc
 
     def model_env_init(self):
-        return None
+        import tensorflow as tf
+        # specify whether to run Keras/TensorFlow on CPU or GPU (and which GPU, if you have multiple)
+        self.s_tf_device = '/cpu:0'
+        # s_tf_device = '/gpu:0'
+        # s_tf_device = '/gpu:1'
+
+        with tf.device(self.s_tf_device):
+            # Force TensorFlow to use single thread.
+            # Multiple threads are a potential source of
+            # non-reproducible results.
+            # For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
+            session_conf = tf.ConfigProto( intra_op_parallelism_threads=self.num_threads,
+                                           inter_op_parallelism_threads=self.num_threads, log_device_placement=True,
+                                           allow_soft_placement=True)
+            # allocate only as much GPU memory as needed by runtime - otherwise all GPU memory is reserved and multiple processes cannot use GPU
+            session_conf.gpu_options.allow_growth = True
+
+            from keras import backend as K
+
+            # The below tf.set_random_seed() will make random number generation
+            # in the TensorFlow backend have a well-defined initial state.
+            # For further details, see: https://www.tensorflow.org/api_docs/python/tf/set_random_seed
+            tf.set_random_seed(self.rn_seed_init)
+
+            sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
+            init = tf.global_variables_initializer()
+            sess.run(init)
+            K.set_session(sess)
 
     def model_params(self):
-        self.params['svm_C']                    = {svm_C}
-        self.params['svm_kernel']               = {svm_kernel}
-        self.params['kernel_poly_degree']       = {kernel_poly_degree}
-        self.params['kernel_gamma']             = {kernel_gamma}
-        self.params['kernel_coef']              = {kernel_coef}
-        self.params['probability_output']       = {probability_output}
-        self.params['shrinking']                = {shrinking}
-        self.params['stopping_tolerance']       = {stopping_tolerance}
-        self.params['class_weighted']           = {class_weighted}
-        self.params['class_0_weight']           = {class_0_weight}
-        self.params['class_1_weight']           = {class_1_weight}
-        self.params['num_round']                = {num_round}
-        self.params['nthread']                  = {nthread}
-        self.params['verbosity']                = {verbosity}
+        self.params['optimizer']                = {optimizer}
+        self.params['activation']               = {activation}
+        self.params['layers']                   = {layers}
+        self.params['neurons']                  = {neurons}
+        self.params['batch_size']               = {batch_size}
+        self.params['epochs']                   = {epochs}
+        self.params['dropout']                  = {dropout}
+        self.params['activation_output']        = {activation_output}
+        self.params['early_stopping_min_delta'] = {early_stopping_min_delta}
 
         if self.is_binary:
             print ("detected binary target: use AUC/LOGLOSS and Binary Cross Entropy loss evaluation")
-            self.params['objective']                   = 'ovr'
-            self.params['eval_metric']                 = ['logloss','auc', 'aucpr']
-            self.params['num_class']                   = 1
-            #self.params['s_loss_function']             = 'binary_crossentropy'
+            self.params['objective']                   = 'binary'
+            self.params['s_loss_function']             = 'binary_crossentropy'
             #self.params['metric']                     = [self.tf_roc_auc, self.tf_prc_auc]                                 # if using custom metric function cannot save in params as pickle will fail
-            #self.metric                                = [self.tf_roc_auc, self.tf_prc_auc]                                 # in such case use local class variable for metric
-            #self.params['early_stop_metric']           = 'val_tf_prc_auc'
-            #self.params['early_stop_metric_direction'] = 'max'
+            self.metric                                = [self.tf_roc_auc, self.tf_prc_auc]                                 # in such case use local class variable for metric
+            self.params['early_stop_metric']           = 'val_tf_prc_auc'
+            self.params['early_stop_metric_direction'] = 'max'
+            self.params['num_class']                   = 1
         elif self.is_set(self.objective_multiclass):
             print ("detected multi-class target: use Multi-LogLoss/Error; " + str(len(self.target_classes)) + " classes")
             self.params['objective']                   = self.objective_multiclass
-            self.params['eval_metric']                 = ['merror','mlogloss']
+            self.params['s_loss_function']             = 'categorical_crossentropy'
             self.params['num_class']                   = int(max(self.target_classes) + 1)  # requires all int numbers from 0 to max to be classes
-            #self.params['s_loss_function']             = 'categorical_crossentropy'
             #self.params['metric']                      = ['accuracy']
-            #self.metric                                = ['accuracy']
-            #self.params['early_stop_metric']           = 'val_loss'
-            #self.params['early_stop_metric_direction'] = 'auto'
+            self.metric                                = ['accuracy']
+            self.params['early_stop_metric']           = 'val_loss'
+            self.params['early_stop_metric_direction'] = 'auto'
         else:
             print ("detected regression target: use RMSE/MAE")
-            self.params['objective']                   = self.objective_regression
-            self.params['eval_metric']                 = ['mae','logloss','rmse']
-            #self.params['s_loss_function'] = 'mean_squared_error'
+            self.params['objective']       = self.objective_regression
+            self.params['s_loss_function'] = 'mean_squared_error'
             #self.params['metric']                      = ['mean_squared_error']
-            #self.metric                                = ['mean_squared_error']
-            #self.params['early_stop_metric']           = 'val_loss'
-            #self.params['early_stop_metric_direction'] = 'auto'
+            self.metric                                = ['mean_squared_error']
+            self.params['early_stop_metric']           = 'val_loss'
+            self.params['early_stop_metric_direction'] = 'auto'
             self.params['num_class']       = 1
             # params['metric']             = ['rmse', 'mae']
 
     def model_init(self):
-        svm_model = self.svm.SVC(
-                            C            = self.params['svm_C'],
-                            class_weight = {0:self.params['class_0_weight'], 1:self.params['class_1_weight']},
-                            coef0        = self.params['kernel_coef'],
-                            decision_function_shape = 'ovr',
-                            degree       = self.params['kernel_poly_degree'],
-                            gamma        = self.params['kernel_gamma'],
-                            kernel       = self.params['svm_kernel'],
-                            max_iter     = self.params['num_round'],
-                            probability  = self.params['probability_output'],
-                            random_state = self.rn_seed_init,
-                            shrinking    = self.params['shrinking'],
-                            tol          = self.params['stopping_tolerance'],
-                            verbose      = self.params['verbosity'] )
-        return svm_model
+        #############################################################
+        #                   MLP Model Compiling
+        #############################################################
+        import tensorflow as tf
+        with tf.device(self.s_tf_device):
+            from keras.models         import Sequential
+            from keras.layers         import Dense, Dropout
+
+            mlp_model     = Sequential()
+
+            # add hidden layers
+            for i in range(self.params['layers']):
+                if i == 0:
+                    mlp_model.add(Dense(self.params['neurons'], activation=self.params['activation'], input_dim=self.params['input_dim']))
+                else:
+                    mlp_model.add(Dense(self.params['neurons'], activation=self.params['activation']))
+
+                mlp_model.add(Dropout(self.params['dropout']))
+
+            # add output layer
+            mlp_model.add(Dense(self.params['num_class'], activation=self.params['activation_output']))
+
+            mlp_model.compile(loss=self.params['s_loss_function'], optimizer=self.params['optimizer'], metrics=self.metric)
+
+        return mlp_model
+
 
     def model_predict(self, predictor, xt):
         try:
-            pred = predictor.predict_proba(self.np.array(xt))
-            pred = pred[:,1]
+            xt   = self.np.array(xt)
+            pred = predictor.predict(xt, verbose=0)
+
+            if self.is_binary:
+                # prediction is a list of lists by default convert to list of numbers
+                pred = [item for sublist in pred for item in sublist]
 
         except Exception as e:
-            print ('SVM Predict error: ', e)
+            print ('MLP Predict error: ', e)
             pred = 0
 
         return pred
 
     def model_save(self, predictor, file_path):
-        self.joblib.dump(predictor, file_path)
+        predictor.save(file_path)
 
     def model_load(self, file_path):
-        predictor = self.joblib.load(file_path)
-
-        return predictor
-
-
-    # def model_feature_importance(self, predictor, n_top_features=25, col_idx=0, importance_type='gain', print_table = True, to_html = True ):
-    #     # get feature importance dictionary and transform it to list of original features
-    #     importance_dict = predictor.get_score(importance_type=importance_type)
-    #     importance_list = [ [k,v] for k, v in importance_dict.items() ]
-    #
-    #     col_name = 'Importance_' + str(col_idx)
-    #     fi = self.pd.DataFrame( importance_list, columns = ['Feature', col_name] )
-    #     fi[col_name] = fi[col_name].round(4)
-    #
-    #     if col_idx == 1:
-    #         self.fi_total = fi
-    #     else:
-    #         self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
-    #
-    #     if print_table:
-    #         print ()
-    #         self.print_html( fi.sort_values(by=[col_name], ascending=False), max_rows=n_top_features*2, max_cols=2 )
-
-
-    def model_train(self, ml_model, x_train, y_train, x_test, y_test, current_fold):
-        #x_train = self.xgb.DMatrix( x_train, label=y_train, feature_names=x_train.columns)    # convert DF to xgb.DMatrix as required by XGB
-        #x_test  = self.xgb.DMatrix( x_test,  label=y_test,  feature_names=x_test.columns)
-
-        #watchlist = [(x_train,'train'), (x_test, 'test')]
-        #predictor = self.xgb.train( self.params, x_train, self.params['num_round'], watchlist, verbose_eval=100, early_stopping_rounds=10 )
-
-        #self.model_feature_importance(predictor, n_top_features=25, col_idx=current_fold, importance_type='gain', print_table = self.print_tables, to_html = self.print_to_html )
-
-        ml_model.fit( self.np.array(x_train), self.np.array(y_train) )
-        print ("Support Vectors per class: ", ml_model.n_support_)
+        import tensorflow as tf
+        with tf.device(self.s_tf_device):
+            from keras.models import load_model
+            ml_model = load_model(file_path)
 
         return ml_model
+
+
+    def model_train(self, ml_model, x_train, y_train, x_test, y_test):
+        import tensorflow as tf
+        with tf.device(self.s_tf_device):
+            from keras.callbacks import EarlyStopping
+
+            early_stopper = EarlyStopping( monitor   =self.params['early_stop_metric'],
+                                           min_delta =self.params['early_stopping_min_delta'], patience=2, verbose=0,
+                                           mode      =self.params['early_stop_metric_direction'] )
+
+            mlp_history   = ml_model.fit( x_train, y_train,
+                                        batch_size      = self.params['batch_size'],
+                                        epochs          = self.params['epochs'],
+                                        verbose         = 0,
+                                        validation_data = (x_test, y_test),
+                                        callbacks       = [early_stopper] )
+
+            self.print_html(self.pd.DataFrame(mlp_history.history))
+
+            score = ml_model.evaluate(x_test, y_test, verbose=0)
+            print('Test fold loss:',     score[0])
+            print('Test fold accuracy:', score[1])
+
+            return ml_model
 
 
     def load_columns(self, map_dict=True):
@@ -668,21 +690,21 @@ class cls_ev_agent_{id}:
                     print ("x_test rows count: " + str(len(x_test)))
                     print ("x_train rows count: " + str(len(x_train)))
 
-                    y_train = x_train[self.target_col]          # separate training fields and the target
-                    x_train = x_train.drop(self.target_col, 1)
+                    y_train = self.np.array( x_train[self.target_col] )          # separate training fields and the target
+                    x_train = self.np.array( x_train.drop(self.target_col, 1) )
 
-                    y_test = x_test[self.target_col]
-                    x_test = x_test.drop(self.target_col, 1)
+                    y_test = self.np.array( x_test[self.target_col] )
+                    x_test = self.np.array( x_test.drop(self.target_col, 1) )
 
                     predictor = self.model_init()
-                    predictor = self.model_train(predictor, x_train, y_train, x_test, y_test, fold-self.start_fold+1)
+                    predictor = self.model_train(predictor, x_train, y_train, x_test, y_test)
                     pred      = self.model_predict(predictor, x_test)
 
                     if mode==1:
                         self.model_save(predictor, workdir + self.output_column + "_fold" + str(fold) + ".model")
 
                     if self.is_binary:
-                        result = my_log_loss(y_test, pred)
+                        result = log_loss(y_test, pred)
                         # show various metrics as per
                         # http://scikit-learn.org/stable/modules/model_evaluation.html#classification-report
                         result_roc_auc = roc_auc_score(y_test, pred)
@@ -698,7 +720,7 @@ class cls_ev_agent_{id}:
                     elif self.is_set(self.objective_multiclass):
                         pred_classes = self.np.argmax(pred, axis=1)
                         result_prec_score = precision_score(y_test, pred_classes, average='weighted')
-                        result_acc_score  = accuracy_score(y_test, pred_classes)
+                        result_acc_score = accuracy_score(y_test, pred_classes)
                         result_cm = confusion_matrix(y_test, pred_classes)
                         result_cr = classification_report(y_test, pred_classes)
                         if self.print_tables:
@@ -723,7 +745,7 @@ class cls_ev_agent_{id}:
                     count_records_notnull += len(pred)
 
                     # predict all examples in the original test set which may include erroneous examples previously removed
-                    pred_all_test = self.model_predict(predictor, x_test_orig.drop(self.target_col, axis=1))
+                    pred_all_test = self.model_predict(predictor, self.np.array(x_test_orig.drop(self.target_col, axis=1)))
 
                     if self.params['objective'] == self.objective_multiclass:
                         prediction[range_start:range_end] = self.np.argmax(pred_all_test, axis=1)
@@ -732,8 +754,8 @@ class cls_ev_agent_{id}:
 
                     # predict validation and remainder sets examples
                     if self.use_validation_set:
-                        predicted_valid_set += self.model_predict(predictor, df_valid.drop(self.target_col, axis=1))
-                        predicted_test_set  += self.model_predict(predictor, df_test.drop(self.target_col, axis=1))
+                        predicted_valid_set += self.model_predict(predictor, self.np.array(df_valid.drop(self.target_col, axis=1)))
+                        predicted_test_set  += self.model_predict(predictor, self.np.array(df_test.drop(self.target_col, axis=1)))
 
                 predicted_valid_set = predicted_valid_set / (self.nfolds - self.start_fold)
                 predicted_test_set  = predicted_test_set / (self.nfolds - self.start_fold)
@@ -779,15 +801,21 @@ class cls_ev_agent_{id}:
                     print ("x_test  rows count: " + str(len(x_test)))
                     print ("x_train rows count: " + str(len(x_train)))
 
-                    y_train = x_train[self.target_col]  # separate training fields and the target
-                    x_train = x_train.drop(self.target_col, 1)
+                    y_train = self.np.array( x_train[self.target_col] )  # separate training fields and the target
+                    x_train = self.np.array( x_train.drop(self.target_col, 1) )
 
-                    y_test = x_test[self.target_col]
-                    x_test = x_test.drop(self.target_col, 1)
+                    y_test = self.np.array( x_test[self.target_col] )
+                    x_test = self.np.array( x_test.drop(self.target_col, 1) )
 
                     predictor = self.model_init()
-                    predictor = self.model_train(predictor, x_train, y_train, x_test, y_test, fold_all)
+                    predictor = self.model_train(predictor, x_train, y_train, x_test, y_test)
                     pred      = self.model_predict(predictor, x_test)
+
+                    # fi = self.print_feature_importance(n_top_features=25, col_idx=fold_all, importance_type='gain', print_table=False, to_html=self.print_to_html)
+                    # if fold_all == 1:
+                    #     self.fi_total = fi
+                    # else:
+                    #     self.fi_total = self.pd.merge(self.fi_total, fi, how='outer', on='Feature', sort=False)
 
                     try:
                         if self.is_binary:
@@ -882,7 +910,7 @@ class cls_ev_agent_{id}:
                 for fold in range(0, len(predictors)):
                     # predict remainder in the column output mode
                     if len(df_test) > 0 and mode == 1:
-                        pred = self.model_predict(predictors[fold], df_test.drop(self.target_col, axis=1))
+                        pred = self.model_predict(predictors[fold], self.np.array(df_test.drop(self.target_col, axis=1)))
                         predicted_test_set += pred
 
                         if self.params['objective'] == self.objective_multiclass:
@@ -897,7 +925,7 @@ class cls_ev_agent_{id}:
 
                     # predict validation set
                     if self.use_validation_set:
-                        df_valid_x = df_valid.drop(self.target_col, axis=1)
+                        df_valid_x = self.np.array(df_valid.drop(self.target_col, axis=1))
                         pred = self.model_predict(predictors[fold], df_valid_x)
                         predicted_valid_set += pred
 
@@ -1002,7 +1030,7 @@ class cls_ev_agent_{id}:
 
         # combine feature importance results from all folds into one table
         #fi_cols = [col for col in self.fi_total.columns if 'Importance' in col]
-        #self.fi_total['Importance_AVG']      = self.np.round(self.fi_total[fi_cols].sum(axis=1) / fold_all, decimals=2)
+        #self.fi_total['Importance_AVG'] = self.np.round(self.fi_total[fi_cols].sum(axis=1) / fold_all, decimals=2)
         #self.fi_total['Importance_AVG_perc'] = self.np.round(100 * self.fi_total['Importance_AVG'] / self.fi_total['Importance_AVG'].sum(axis=0), decimals=2)
 
         #print ('\nFEATURE Importance Overall:')
